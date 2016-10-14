@@ -2020,6 +2020,16 @@ function get_calendar( $initial = true, $echo = true ) {
 	$newrow = false;
 	$daysinmonth = (int) date( 't', $unixmonth );
 	
+	require 'wp-config.php';
+	// Datos de la base de datos
+	$servername = DB_HOST;
+	$username = DB_USER;
+	$password = DB_PASSWORD;
+	$database = DB_NAME;
+	
+	// Creamos la conexion a la base de datos
+	$conn = new mysqli($servername, $username, $password, $database);
+	
 	for ( $day = 1; $day <= $daysinmonth; ++$day ) {
 		if ( isset($newrow) && $newrow ) {
 			$calendar_output .= "\n\t</tr>\n\t<tr>\n\t\t";
@@ -2038,6 +2048,21 @@ function get_calendar( $initial = true, $echo = true ) {
 			// any posts today?
 			$date_format = date( _x( 'F j, Y', 'daily archives date format' ), strtotime( "{$thisyear}-{$thismonth}-{$day}" ) );
 			$label = sprintf( __( 'Posts published on %s' ), $date_format );
+			
+			$idPost = 0;
+			foreach ($dayswithposts as $dayPost) {
+				if ($day == intval($dayPost[0])){
+					$idPost = $dayPost[1];
+				}
+			}
+			
+			$sql = "SELECT meta_value FROM wp_postmeta WHERE post_id = '". $idPost ."' AND meta_key = 'post_taxonomy'";
+			$result = $conn->query($sql);
+			$category = $result->fetch_assoc();
+			
+			$clase = '';
+			//if ( strpos($category["meta_value"], '27') !== false ) $clase = "class='festivo' ";
+			if ( strpos($category["meta_value"], '27') !== false ) $clase = "style='color: red;' ";
 			
 			$calendar_output .= sprintf(
 				'<a '. $clase . 'href="%s" aria-label="%s">%s</a>',
