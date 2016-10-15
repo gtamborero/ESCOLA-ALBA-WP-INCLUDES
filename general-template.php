@@ -2020,7 +2020,7 @@ function get_calendar( $initial = true, $echo = true ) {
 	$newrow = false;
 	$daysinmonth = (int) date( 't', $unixmonth );
 	
-	require 'wp-config.php';
+	require_once 'wp-config.php';
 	// Datos de la base de datos
 	$servername = DB_HOST;
 	$username = DB_USER;
