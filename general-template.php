@@ -2057,6 +2057,13 @@ function get_calendar( $initial = true, $echo = true ) {
 			}
 			
 			$sql = "SELECT meta_value FROM wp_postmeta WHERE post_id = '". $idPost ."' AND meta_key = 'post_taxonomy'";
+			wp_reset_query();
+			$sqlwp = $wpdb->get_results("SELECT meta_value FROM wp_postmeta WHERE post_id = '". $idPost ."' AND meta_key = 'post_taxonomy'");
+			
+			echo $sql . "<br />go ->";
+			echo $wpdb->last_query;
+			//exit(-1);
+			
 			$result = $conn->query($sql);
 			$category = $result->fetch_assoc();
 			
